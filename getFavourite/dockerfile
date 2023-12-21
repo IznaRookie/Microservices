@@ -1,0 +1,12 @@
+FROM python:3.11.7-slim-bullseye
+
+WORKDIR /app
+COPY . .
+
+RUN pip install fastapi
+RUN pip install uvicorn
+RUN pip install mysql-connector-python
+
+EXPOSE 3001
+
+CMD ["python", "main.py"]

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Choose a random book</h1>
+    <a href="/all">Favourite</a>
+    <button id="gen_btn">Find</button><br>
+    <input type="text" id="input_books" name="Type the name of a book"><br>
+    <button id="add">Add to favourite</button>
+
+    <div class="Title">
+        <img id="cover" src="" alt="Cover Image">
+        <h2 id="book_title"></h2>
+        <p id="book_genres"></p>
+        <p id="book_rating"></p>
+        <p id="book_plot"></p>
+    </div>
+
+    <script src="{{ url_for('static', filename= 'script.js') }}"></script>
+</body>
+</html>
