@@ -10,11 +10,15 @@ services:
       - 5051:5051
 
   getbook:
+    depends_on:
+      - jaeger
     build:
       context: /getBook
       dockerfile: dockerfile
     ports:
       - 80:80
+    environment:
+      JAGER_HOSTNAME: jaeger
 
   mysql_db:
     container_name: mysql_db
@@ -31,6 +35,49 @@ services:
     ports:
       - 3001:3001
     environment:
+      JAGER_HOSTNAME: jaeger
       MYSQL_HOST: mysql_db
       MYSQL_USER: root
       MYSQL_PASSWORD: Iznarocky
+
+  keycloak:
+    container_name: keycloakapp
+    volumes:
+      - ./imports:/opt/jboss/keycloak/imports
+    image: quay.io/keycloak/keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/realm-export.json
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command:
+      - start-dev
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    hostname: grafana
+    image: grafana/grafana
+    ports:
+      - 4000:3000
+
+  jaeger:
+    hostname: jaeger
+    image: jaegertracing/all-in-one:1.23
+    ports:
+      - 5775:5775/udp
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686
+      - 14268:14268
+      - 4250:14250
+      - 9411:9411
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
